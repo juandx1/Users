@@ -109,4 +109,18 @@ class RolesController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
+    public function isAuthorized($user)
+    {
+        $roles = $this->Roles->find('roled', [
+            'users' => $user
+        ]);
+
+        foreach ($roles as $role) {
+            if ($role->name === 'admin') {
+                return true;
+            }
+        }
+        return parent::isAuthorized($user);
+    }
+
 }

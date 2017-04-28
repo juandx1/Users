@@ -14,6 +14,7 @@
  */
 namespace App\Controller;
 
+use Cake\Routing\Router;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
 
@@ -41,6 +42,25 @@ class AppController extends Controller
     {
         parent::initialize();
 
+        $this->loadComponent('Auth', [
+            'authorize' => 'Controller',
+            'authenticate' => [
+                'Form' => [
+                    'fields' => [
+                        'username' => 'email',
+                        'password' => 'password'
+                    ]
+                ]
+            ],
+            'loginAction' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ],
+            'unauthorizedRedirect' => $this->referer()
+        ]);
+
+        $this->Auth->allow(['display']);
+
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
 
@@ -65,5 +85,34 @@ class AppController extends Controller
         ) {
             $this->set('_serialize', true);
         }
+    }
+
+    public function beforeFilter(Event $event) {
+        if ($this->Auth->user()) {
+            $this->set('user', $this->Auth->user());
+            $this->set('loggedIn', true);
+
+            $this->loadModel('Roles');
+            $roles = $this->Roles->find('roled', [
+                'users' => $this->Auth->user()
+            ]);
+
+            foreach ($roles as $role) {
+                if ($role->name === 'admin') {
+                    $this->set('role', 'admin');
+                } elseif ($role->name === 'agent') {
+                    $this->set('role', 'agent ');
+                } elseif ($role->name === 'customer') {
+                    $this->set('role', 'customer');
+                }
+            }
+        }else{
+            $this->set('loggedIn', false);
+        }
+    }
+
+    public function isAuthorized($user)
+    {
+        return false;
     }
 }

@@ -33,12 +33,14 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->fetch('script') ?>
 </head>
 <body>
+<?php echo $this->Facebook->initJsSDK(); ?>
 <nav class="top-bar expanded" data-topbar role="navigation">
     <ul class="title-area large-3 medium-4 columns">
         <li class="name">
             <h1><a href=""><?= $this->fetch('title') ?></a></h1>
         </li>
     </ul>
+    <?php if ($loggedIn === true): ?>
         <ul class="title-area large-9 medium-8 columns">
             <li class="name text-right">
                 <h1>
@@ -51,6 +53,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                 </h1
             </li>
         </ul>
+    <?php else: ?>
         <ul class="title-area large-9 medium-8 columns">
             <li class="name text-right">
                 <h1>
@@ -58,6 +61,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                 </h1
             </li>
         </ul>
+    <?php endif; ?>
 </nav>
 <?= $this->Flash->render() ?>
 <div class="container clearfix">

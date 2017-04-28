@@ -6,9 +6,16 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
+        <?php if ($role === 'admin'): ?>
             <li><?= $this->Html->link(__('Edit User'), ['action' => 'edit', $user->id]) ?> </li>
             <li><?= $this->Form->postLink(__('Delete User'), ['action' => 'delete', $user->id], ['confirm' => __('Are you sure you want to delete # {0}?', $user->id)]) ?> </li>
+        <?php endif; ?>
+        <?php if ($role === 'admin' || $role === 'agent'): ?>
             <li><?= $this->Html->link(__('List Users'), ['action' => 'index']) ?> </li>
+            <li><?= $this->Html->link(__('Export Users'), ['controller' => 'Excel', 'action' => 'exportUsers']) ?></li>
+            <li><?= $this->Html->link(__('Import Users'), ['controller' => 'Excel', 'action' => 'importUsers']) ?></li>
+        <?php endif; ?>
+        <?php if ($role === 'admin'): ?>
             <li><?= $this->Html->link(__('New User'), ['action' => 'add']) ?> </li>
             <li><?= $this->Html->link(__('List Roles'), ['controller' => 'Roles', 'action' => 'index']) ?> </li>
             <li><?= $this->Html->link(__('New Role'), ['controller' => 'Roles', 'action' => 'add']) ?> </li>
@@ -69,16 +76,20 @@
                     <th scope="col"><?= __('Description') ?></th>
                     <th scope="col" class="actions"><?= __('Actions') ?></th>
                 </tr>
+                <?php foreach ($user->roles as $roles): ?>
                     <tr>
                         <td><?= h($roles->id) ?></td>
                         <td><?= h($roles->name) ?></td>
                         <td><?= h($roles->description) ?></td>
                         <td class="actions">
+                            <?php if ($role === 'admin'): ?>
                                 <?= $this->Html->link(__('View'), ['controller' => 'Roles', 'action' => 'view', $roles->id]) ?>
                                 <?= $this->Html->link(__('Edit'), ['controller' => 'Roles', 'action' => 'edit', $roles->id]) ?>
                                 <?= $this->Form->postLink(__('Delete'), ['controller' => 'Roles', 'action' => 'delete', $roles->id], ['confirm' => __('Are you sure you want to delete # {0}?', $roles->id)]) ?>
+                            <?php endif; ?>
                         </td>
                     </tr>
+                <?php endforeach; ?>
             </table>
         <?php endif; ?>
     </div>

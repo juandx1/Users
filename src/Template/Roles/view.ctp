@@ -12,6 +12,8 @@
         <li><?= $this->Html->link(__('New Role'), ['action' => 'add']) ?> </li>
         <li><?= $this->Html->link(__('List Users'), ['controller' => 'Users', 'action' => 'index']) ?> </li>
         <li><?= $this->Html->link(__('New User'), ['controller' => 'Users', 'action' => 'add']) ?> </li>
+        <li><?= $this->Html->link(__('Export Users'), ['controller' => 'Excel', 'action' => 'exportUsers']) ?></li>
+        <li><?= $this->Html->link(__('Import Users'), ['controller' => 'Excel', 'action' => 'importUsers']) ?></li>
     </ul>
 </nav>
 <div class="roles view large-9 medium-8 columns content">
