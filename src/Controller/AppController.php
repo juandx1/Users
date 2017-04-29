@@ -59,6 +59,15 @@ class AppController extends Controller
             'unauthorizedRedirect' => $this->referer()
         ]);
 
+        $this->loadComponent('AkkaFacebook.Graph', [
+            'app_id' => '194393191079227',
+            'app_secret' => '2afb0e005aed31c442917cc6a291e427',
+            'app_scope' => 'email,name', // https://developers.facebook.com/docs/facebook-login/permissions/v2.4
+            'redirect_url' => Router::url(['controller' => 'Users', 'action' => 'login'], TRUE), // This should be enabled by default
+            'post_login_redirect' => Router::url(['controller' => 'Users', 'action' => 'fb_login'], TRUE),
+            'user_columns' => ['first_name' => 'name', 'username' => 'email', 'password' => 'password'] //not required
+        ]);
+
         $this->Auth->allow(['display']);
 
         $this->loadComponent('RequestHandler');

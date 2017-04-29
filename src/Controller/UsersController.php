@@ -156,7 +156,14 @@ class UsersController extends AppController
     public function login()
     {
         if ($this->request->is('post')) {
+            $user = $this->Users->find('all',['conditions' => ['email' => $this->request->getData()['email'], 'require_password' => true]])->first();
+            if ($user) {
+                $this->Auth->setUser($user->toArray());
+                $this->Flash->error('Please change your password.');
+                return $this->redirect(['action' => 'edit', $user->id]);
+            } else {
                 $user = $this->Auth->identify();
+            }
             if ($user) {
                 if ($user['active'] == 1) {
                     $this->Auth->setUser($user);
