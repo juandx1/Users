@@ -31,7 +31,7 @@ class ExcelController extends AppController
             $sheet->setCellValueExplicitByColumnAndRow(2, $key + 1, $user->phone_number, 'n');
         }
 
-        $downloadPath = 'downloads/files/';
+        $downloadPath = ROOT.'/downloads/files/';
         $date = date('m-d-Y-h-m-s', time());
         $downloadFile = $downloadPath . 'users' . $date . '.xlsx';
         $writer = new Xlsx($spreadsheet);
@@ -47,19 +47,25 @@ class ExcelController extends AppController
         if ($this->request->is('post')) {
             if (!empty($this->request->getData()['file']['name'])) {
                 $fileName = $this->request->getData()['file']['name'];
-                $uploadPath = 'uploads/files/';
+                $uploadPath = ROOT.'/uploads/files/';
                 $date = date('m-d-Y-h-m-s', time());
-                $uploadFile = $uploadPath . $fileName . $date;
-                $numberUsers = 0;
                 $inputFileType = pathinfo($fileName, PATHINFO_EXTENSION);
+                $uploadFile = $uploadPath .pathinfo($fileName)['filename'] . $date. '.'.$inputFileType;
+                $numberUsers = 0;
                 if (move_uploaded_file($this->request->getData()['file']['tmp_name'], $uploadFile)) {
                     try {
                         if ($inputFileType == 'tsv') {
-                            $reader = IOFactory::createReader($inputFileType);
+                            $reader = IOFactory::createReader('Csv');
                             $reader->setDelimiter("\t");
                             $spreadsheet = $reader->load($uploadFile);
-                        } elseif ($inputFileType == 'csv' || $inputFileType == 'xls' || $inputFileType == 'xlsx') {
-                            $reader = IOFactory::createReader($inputFileType);
+                        } elseif ($inputFileType == 'xlsx'){
+                            $reader = IOFactory::createReader('Xlsx');
+                            $spreadsheet = $reader->load($uploadFile);
+                        } elseif ($inputFileType == 'xls'){
+                            $reader = IOFactory::createReader('Xls');
+                            $spreadsheet = $reader->load($uploadFile);
+                        } elseif ($inputFileType == 'csv' ) {
+                            $reader = IOFactory::createReader('Csv');
                             $spreadsheet = $reader->load($uploadFile);
                         } else {
                             $this->Flash->error(__('The file format is not valid'));
